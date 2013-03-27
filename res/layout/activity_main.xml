@@ -8,11 +8,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
 
     <jp.sdnaKensyu.socialtodo.PlotView
         android:id="@+id/plotView1"
@@ -20,5 +15,10 @@
         android:layout_height="200dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true" />
+
+ 	<Button android:id="@+id/buttonToTaskEntry"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:text="タスク登録画面へ" />
 
 </RelativeLayout>

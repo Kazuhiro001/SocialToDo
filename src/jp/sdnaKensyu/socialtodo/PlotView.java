@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import android.annotation.SuppressLint;
@@ -38,18 +39,36 @@ public class PlotView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 		canvas.drawLine(10, 10, 180, 10, paint);
 		canvas.drawLine(10, 10, 10, 180, paint);
 
-		///task描写
+		String projectID = "testProject";
+		List<String> userNames = null;
 		List<Task> tasks = null;
-		paint.setColor(Color.RED);
-		try {
-			tasks = getTasks();
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		for(Task task: tasks) {
-			plotTask(task, canvas, paint);
+		userNames = getProjectUsers(projectID);
+
+		for(String userName: userNames){
+			try {
+				tasks = getProjectTasks(projectID);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			List<Task> userTasks = filterTasksWithName(tasks, userName);
+			///一ユーザーのtask描写
+			paint.setColor(Color.RED);
+			for(Task task: userTasks) {
+				plotTask(task, canvas, paint);
+			}
 		}
 		getHolder().unlockCanvasAndPost(canvas);
+	}
+
+	private List<Task> filterTasksWithName(List<Task> tasks, String userName) {
+		// TODO 自動生成されたメソッド・スタブ
+		return tasks;
+	}
+
+	private List<String> getProjectUsers(String projectID) {
+		List<String> users = new ArrayList<String>();
+		users.add("testUser");
+		return users;
 	}
 
 	@Override
@@ -81,9 +100,19 @@ public class PlotView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 	private List<Task> getTasks() throws ParseException {
 		List<Task> tasks = new ArrayList<Task>();
 		DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
-		tasks.add(new Task("name1", df.parse("2013/03/21"), 3));
-		tasks.add(new Task("name2", df.parse("2013/03/22"), 2));
-		tasks.add(new Task("name3", df.parse("2013/03/23"), 1));
+		tasks.add(new Task("name1", df.parse("2013/03/21"), 3, "testUser"));
+		tasks.add(new Task("name2", df.parse("2013/03/22"), 2, "testUser"));
+		tasks.add(new Task("name3", df.parse("2013/03/23"), 1, "testUser"));
+		return tasks;
+	}
+
+	private List<Task> getProjectTasks(String id) throws ParseException {
+		//TODO
+		List<Task> tasks = new ArrayList<Task>();
+		DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
+		tasks.add(new Task("name1", df.parse("2013/03/21"), 3, "testUser"));
+		tasks.add(new Task("name2", df.parse("2013/03/22"), 2, "testUser"));
+		tasks.add(new Task("name3", df.parse("2013/03/23"), 1, "testUser"));
 		return tasks;
 	}
 }

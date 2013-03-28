@@ -10,11 +10,13 @@ public class Task {
 	private int priority;
 	private String infomation;
 	private int group;
+	private String[] userNames = new String[10];
 
-	public Task(String name, Date deadLine, int priority) {
+	public Task(String name, Date deadLine, int priority, String userName) {
 		this.name = name;
 		this.deadLine = deadLine;
 		this.priority = priority;
+		this.userNames[0] = userName;
 	}
 
 	public String getName() {

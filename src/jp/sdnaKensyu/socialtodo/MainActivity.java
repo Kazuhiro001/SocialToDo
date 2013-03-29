@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import jp.sdnaKensyu.socialtodo.R.id;
 
-
 public class MainActivity extends Activity {
 	PlotView mPlotView;
 
@@ -25,6 +24,17 @@ public class MainActivity extends Activity {
 				 // ボタンがクリックされた時に呼び出されます
 				 Intent intent = new Intent(MainActivity.this,
 						 TaskEntryActivity.class);
+				 startActivity(intent);
+			}
+		});
+
+		button = (Button) findViewById(id.buttonForLogin);
+		button.setOnClickListener(new View.OnClickListener() {
+			 @Override
+			 public void onClick(View v) {
+				 // ボタンがクリックされた時に呼び出されます
+				 Intent intent = new Intent(MainActivity.this,
+						 LoginActivity.class);
 				 startActivity(intent);
 			}
 		});

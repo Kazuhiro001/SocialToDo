@@ -1,19 +1,14 @@
 package jp.sdnaKensyu.socialtodo;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Calendar;
-
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-//import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import jp.sdnaKensyu.socialtodo.R.id;
@@ -24,15 +19,12 @@ import android.app.DatePickerDialog;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 import android.app.TimePickerDialog;
-
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
-
 
 public class TaskEntryActivity extends Activity {
 	@Override
@@ -51,7 +43,6 @@ public class TaskEntryActivity extends Activity {
 		adapter.add("低");
 		Spinner spinner = (Spinner) findViewById(id.spinnerForPriority);
 		spinner.setAdapter(adapter);
-
 
 		///////////////////////////////////////////////////////////
 		/////////////////締切期日設定//////////////////////////////
@@ -74,7 +65,6 @@ public class TaskEntryActivity extends Activity {
 					},
 					year, month, day);
 
-
 		Button buttonForDeadLine = (Button) findViewById(id.buttonForDeadLineDate);
 		buttonForDeadLine.setOnClickListener(new View.OnClickListener() {
 			 @Override
@@ -82,7 +72,6 @@ public class TaskEntryActivity extends Activity {
 					datePickerDialog.show();
 			}
 		});
-
 
 		///////////////////////////////////////////////////////////
 		/////////////////締切時間設定//////////////////////////////
@@ -129,7 +118,6 @@ public class TaskEntryActivity extends Activity {
 					Intent intent = new Intent(TaskEntryActivity.this,
 							 MainActivity.class);
 					 startActivity(intent);
-
 				}
 			});
 		alertDialogBuilder.setCancelable(true);

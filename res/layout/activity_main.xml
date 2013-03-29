@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,17 +8,43 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
 
+	<TableRow
+ 	    android:id="@+id/tableRow0"
+ 	    android:layout_width="wrap_content"
+ 	    android:layout_height="wrap_content" >
+		<TextView
+        	android:id="@+id/textView1"
+        	android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+        	android:text="メイン画面です。"
+        />
+ 	</TableRow>
+ 	
+ 	<TableRow
+ 	    android:id="@+id/tableRow1"
+ 	    android:layout_width="wrap_content"
+ 	    android:layout_height="wrap_content" >
+    	<jp.sdnaKensyu.socialtodo.PlotView
+        	android:id="@+id/plotView1"
+        	android:layout_width="200dp"
+        	android:layout_height="200dp"
+        	android:layout_centerHorizontal="true"
+        	android:layout_centerVertical="true" />
+	</TableRow>
+	
+ 	<TableRow
+ 	    android:id="@+id/tableRow2"
+ 	    android:layout_width="wrap_content"
+ 	    android:layout_height="wrap_content" >
+		<Button android:id="@+id/buttonForLogin"
+	         android:layout_width="fill_parent"
+	         android:layout_height="wrap_content"
+	         android:text="ログインする" />	
+	         
+	 	<Button android:id="@+id/buttonToTaskEntry"
+	         android:layout_width="fill_parent"
+	         android:layout_height="wrap_content"
+	         android:text="タスク登録画面へ" />
+ 	</TableRow>
 
-    <jp.sdnaKensyu.socialtodo.PlotView
-        android:id="@+id/plotView1"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true" />
-
- 	<Button android:id="@+id/buttonToTaskEntry"
-         android:layout_width="fill_parent"
-         android:layout_height="wrap_content"
-         android:text="タスク登録画面へ" />
-
-</RelativeLayout>
+</TableLayout>

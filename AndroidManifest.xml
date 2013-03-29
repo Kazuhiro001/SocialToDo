@@ -24,6 +24,8 @@
             </intent-filter>
         </activity>
         <activity android:name="TaskEntryActivity"></activity>
+        <activity android:name="LoginActivity"></activity>
+        
     </application>
 
 </manifest>

@@ -3,6 +3,8 @@ package jp.sdnaKensyu.socialtodo;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Calendar;
 
@@ -22,6 +24,15 @@ import android.app.DatePickerDialog;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 import android.app.TimePickerDialog;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+
 
 public class TaskEntryActivity extends Activity {
 	@Override
@@ -96,21 +107,22 @@ public class TaskEntryActivity extends Activity {
 				 timePickerDialog.show();
 			}
 		});
-		
+
 		///////////////////////////////////////////////////////////////
 		/////////////所属グループ//////////////////////////////////////
 		///////////////////////////////////////////////////////////////
 		adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		URL url = null;
-		HttpURLConnection http;
-		try{
-			url = new URL("http://yoshio916.s349.xrea.com/api/v1/GetAllProjectInformation/");
-		}catch(MalformedURLException e ){
-			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-			alertDialogBuilder.setTitle("警告");
-			alertDialogBuilder.setMessage("URLが正しく設定できていません。\nメイン画面に戻ります。");
-			alertDialogBuilder.setPositiveButton("確認",
+		URI uri = null;
+		HttpClient http;
+		http = new DefaultHttpClient();
+		HttpParams params = http.getParams();
+	    HttpConnectionParams.setConnectionTimeout(params, 1000); //接続のタイムアウト
+	    HttpConnectionParams.setSoTimeout(params, 1000); //データ取得のタイムアウト
+	    //アラートダイアログをメッセージ以外作成しておく
+	    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+		alertDialogBuilder.setTitle("警告");
+		alertDialogBuilder.setPositiveButton("確認",
 				new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
@@ -120,40 +132,40 @@ public class TaskEntryActivity extends Activity {
 
 				}
 			});
-			alertDialogBuilder.setCancelable(true);
+		alertDialogBuilder.setCancelable(true);
+
+		try{
+			uri = new URI("http://yoshio916.s349.xrea.com/api/v1/GetAllProjectInformation/");
+		}catch(URISyntaxException e ){
+			alertDialogBuilder.setMessage("URLが正しく設定できていません。\nメイン画面に戻ります。");
 	        AlertDialog alertDialog = alertDialogBuilder.create();
 	        alertDialog.show();
 		}
 		try{
-			http = (HttpURLConnection)url.openConnection();
-			http.connect();
+		    HttpGet objGet   = new HttpGet(uri);
+	        HttpResponse response = http.execute(objGet);
+
+	        if (response.getStatusLine().getStatusCode() >= 400){
+	        //レスポンスが400以上であればエラー
+				alertDialogBuilder.setMessage("エラーコード" + response.getStatusLine().getStatusCode() + "\nメイン画面に戻ります。");
+		        AlertDialog alertDialog = alertDialogBuilder.create();
+		        alertDialog.show();
+	        }
 			adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
 			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			// アイテムを追加します
 			adapter.add("グループA");
 			adapter.add("グループB");
 			adapter.add("グループC");
-			//adapter.add(""+http.getResponseCode());
+			//adapter.add();
 			spinner = (Spinner) findViewById(id.spinnerForGroup);
 			spinner.setAdapter(adapter);
 		}catch(IOException e){
-			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-			alertDialogBuilder.setTitle("警告");
 			alertDialogBuilder.setMessage("httpへのコネクトが正しくできていません。\nメイン画面に戻ります。");
-			alertDialogBuilder.setPositiveButton("確認",
-				new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					Intent intent = new Intent(TaskEntryActivity.this,
-							 MainActivity.class);
-					 startActivity(intent);
-				}
-			});
-	        alertDialogBuilder.setCancelable(true);
 	        AlertDialog alertDialog = alertDialogBuilder.create();
 	        alertDialog.show();
 		}
-		
+
 		////////////////////////////////////////////////////////////////
 		///////////登録ボタン///////////////////////////////////////////
 		////////////////////////////////////////////////////////////////
@@ -164,7 +176,7 @@ public class TaskEntryActivity extends Activity {
 				 // ボタンがクリックされた時に呼び出されます
 			}
 		});
-		
+
 		//////////////////////////////////////////////////////
 		//////////メインに戻るボタン//////////////////////////
 		//////////////////////////////////////////////////////

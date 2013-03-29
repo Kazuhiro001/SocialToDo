@@ -1,9 +1,15 @@
 package jp.sdnaKensyu.socialtodo;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Calendar;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 //import android.view.Menu;
 import android.view.View;
@@ -96,12 +102,57 @@ public class TaskEntryActivity extends Activity {
 		///////////////////////////////////////////////////////////////
 		adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		// アイテムを追加します
-		adapter.add("グループA");
-		adapter.add("グループB");
-		adapter.add("グループC");
-		spinner = (Spinner) findViewById(id.spinnerForGroup);
-		spinner.setAdapter(adapter);
+		URL url = null;
+		HttpURLConnection http;
+		try{
+			url = new URL("http://yoshio916.s349.xrea.com/api/v1/GetAllProjectInformation/");
+		}catch(MalformedURLException e ){
+			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+			alertDialogBuilder.setTitle("警告");
+			alertDialogBuilder.setMessage("URLが正しく設定できていません。\nメイン画面に戻ります。");
+			alertDialogBuilder.setPositiveButton("確認",
+				new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					Intent intent = new Intent(TaskEntryActivity.this,
+							 MainActivity.class);
+					 startActivity(intent);
+
+				}
+			});
+			alertDialogBuilder.setCancelable(true);
+	        AlertDialog alertDialog = alertDialogBuilder.create();
+	        alertDialog.show();
+		}
+		try{
+			http = (HttpURLConnection)url.openConnection();
+			http.connect();
+			adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
+			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			// アイテムを追加します
+			adapter.add("グループA");
+			adapter.add("グループB");
+			adapter.add("グループC");
+			//adapter.add(""+http.getResponseCode());
+			spinner = (Spinner) findViewById(id.spinnerForGroup);
+			spinner.setAdapter(adapter);
+		}catch(IOException e){
+			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+			alertDialogBuilder.setTitle("警告");
+			alertDialogBuilder.setMessage("httpへのコネクトが正しくできていません。\nメイン画面に戻ります。");
+			alertDialogBuilder.setPositiveButton("確認",
+				new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					Intent intent = new Intent(TaskEntryActivity.this,
+							 MainActivity.class);
+					 startActivity(intent);
+				}
+			});
+	        alertDialogBuilder.setCancelable(true);
+	        AlertDialog alertDialog = alertDialogBuilder.create();
+	        alertDialog.show();
+		}
 		
 		////////////////////////////////////////////////////////////////
 		///////////登録ボタン///////////////////////////////////////////

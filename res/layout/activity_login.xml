@@ -63,7 +63,27 @@
 			<Button android:id="@+id/buttonForLogin"
 	    	     android:layout_width="fill_parent"
 	    	     android:layout_height="wrap_content"
-	    	     android:text="ログインする" />	
+	    	     android:text="ログインする" />
 	    </TableRow>
-    			
+
+ 	    <TableRow
+ 	    	android:id="@+id/tableRow5"
+ 	    	android:layout_width="wrap_content"
+ 	    	android:layout_height="wrap_content" >
+			<Button android:id="@+id/buttonToMain"
+	    	     android:layout_width="fill_parent"
+	    	     android:layout_height="wrap_content"
+	    	     android:text="メイン画面に戻る" />
+	    </TableRow>
+
+
+ 	    <TableRow
+ 	    	android:id="@+id/tableRow6"
+ 	    	android:layout_width="wrap_content"
+ 	    	android:layout_height="wrap_content" >
+			<Button android:id="@+id/buttonForCheck"
+	    	     android:layout_width="fill_parent"
+	    	     android:layout_height="wrap_content"
+	    	     android:text="ログイン情報を確認" />
+	    </TableRow>
 </TableLayout>

@@ -1,8 +1,9 @@
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/TableLayout1"
+    android:id="@+id/LinearLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -11,8 +12,8 @@
 
     <TableRow
         android:id="@+id/tableRow3"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp" >
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
 
         <TextView
             android:id="@+id/textView1"
@@ -31,9 +32,8 @@
 
     <TableRow
         android:id="@+id/tableRow1"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="1" >
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
 
         <Spinner
             android:id="@+id/spinner_group"
@@ -46,18 +46,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
+
     </TableRow>
 
-    <TableRow
-        android:id="@+id/tableRow2"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="1" >
 
-        <jp.sdnaKensyu.socialtodo.PlotView
-            android:id="@+id/plotView1"
-            android:layout_width="300dp"
-            android:layout_height="350dp" />
-    </TableRow>
 
-</TableLayout>
+    <jp.sdnaKensyu.socialtodo.PlotView
+        android:id="@+id/plotView1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+
+</LinearLayout>

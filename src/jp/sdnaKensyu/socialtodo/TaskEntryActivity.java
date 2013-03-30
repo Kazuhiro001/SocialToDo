@@ -12,6 +12,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import jp.sdnaKensyu.socialtodo.R.id;
@@ -23,7 +24,10 @@ import android.widget.DatePicker;
 import android.widget.TimePicker;
 import android.app.TimePickerDialog;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.protocol.HTTP;
 
 public class TaskEntryActivity extends Activity {
 	String trimOutputForGetGroup(String output){
@@ -43,6 +47,25 @@ public class TaskEntryActivity extends Activity {
 		}catch(IndexOutOfBoundsException e){
 			return false;
 		}
+	}
+	
+	boolean checkOutputForGetGroupID(String output){
+		int startIndex = output.indexOf("<project_id>")+12;
+		int endIndex = output.indexOf("</project_id>");
+		try{
+			output.substring(startIndex, endIndex);
+			return true;
+		}catch(IndexOutOfBoundsException e){
+			return false;
+		}
+	}
+	
+	String trimOutputForGetGroupID(String output){
+		String str = null;
+		int startIndex = output.indexOf("<project_id>")+12;
+		int endIndex = output.indexOf("</project_id>");
+		str = output.substring(startIndex, endIndex);
+		return str;
 	}
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -117,11 +140,11 @@ public class TaskEntryActivity extends Activity {
 		///////////////////////////////////////////////////////////////
 		/////////////所属グループ//////////////////////////////////////
 		///////////////////////////////////////////////////////////////
-		adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		final ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
+		adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		URI uri = null;
 	    //アラートダイアログをメッセージ以外作成しておく
-	    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+	    final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 		alertDialogBuilder.setTitle("警告");
 		alertDialogBuilder.setPositiveButton("確認",
 				new DialogInterface.OnClickListener() {
@@ -162,7 +185,8 @@ public class TaskEntryActivity extends Activity {
             while((sLine = objBuf.readLine()) != null){
                 objJson.append(sLine);
                 if(checkOutputForGetGroup(sLine)){
-                	adapter.add(trimOutputForGetGroup(sLine));
+                	adapter2.add(trimOutputForGetGroupID(sLine));
+                	adapter.add(trimOutputForGetGroup(sLine));                	
                 }
             }
             objStream.close();
@@ -182,6 +206,7 @@ public class TaskEntryActivity extends Activity {
 			 @Override
 			 public void onClick(View v) {
 				 //タスク作成
+				 URI uri = null;
 				 EditText editText1 = (EditText) findViewById(id.editTextForName);
 				 EditText editText2 = (EditText) findViewById(id.editTextForDeadLineDate);
 				 EditText editText3 = (EditText) findViewById(id.editTextForDeadLineTime);
@@ -191,12 +216,26 @@ public class TaskEntryActivity extends Activity {
 				 task.setDeadLine(editText2.getText().toString());
 				 task.setDeadLineTime(editText3.getText().toString());
 				 task.setPriority(spinner.getSelectedItemPosition());
-				 spinner = (Spinner) findViewById(id.spinnerForGroup);;
-				 task.setGroup(spinner.getSelectedItemPosition());
+				 spinner = (Spinner) findViewById(id.spinnerForGroup);
+				 task.setGroup(Integer.parseInt(adapter2.getItem(spinner.getSelectedItemPosition())));
 				 editText1 = (EditText) findViewById(id.editTextForInfo);
 				 task.setInfomation(editText1.getText().toString());
 				 //タスクを放り込む
-				 
+				try{
+					uri = new URI("http://yoshio916.s349.xrea.com/api/v1/RegisterTask/");
+				}catch(URISyntaxException e ){
+				}
+				try{
+				    HttpPost objPost   = new HttpPost(uri);
+				    objPost.setEntity(new UrlEncodedFormEntity(task.requestTaskEntry(), HTTP.UTF_8));
+			        HttpResponse response = MainActivity.http.execute(objPost);
+					alertDialogBuilder.setMessage("コード確認：" + response.getStatusLine().getStatusCode());
+			        AlertDialog alertDialog = alertDialogBuilder.create();
+			        alertDialog.show();
+
+				}catch(IOException e){
+				}
+			
 			}
 		});
 

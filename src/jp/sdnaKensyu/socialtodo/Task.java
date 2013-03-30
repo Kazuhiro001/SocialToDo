@@ -2,7 +2,14 @@ package jp.sdnaKensyu.socialtodo;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
+import android.util.Pair;
 
 public class Task {
 	private	String name;
@@ -31,6 +38,11 @@ public class Task {
 		return deadLine;
 	}
 
+	public String getDeadLineToString(){
+		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		return sdf1.format(deadLine);
+
+	}
 	public void setDeadLine(Date deadLine) {
 		this.deadLine = deadLine;
 	}
@@ -77,4 +89,16 @@ public class Task {
 	public void setGroup(int group){
 		this.group = group;
 	}
+	
+	public List<NameValuePair> requestTaskEntry(){
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("projectId", Integer.toString(this.getGroup())));
+		params.add(new BasicNameValuePair("taskName", this.getName()));
+		params.add(new BasicNameValuePair("taskContents", this.getInfomation()));
+		params.add(new BasicNameValuePair("expectFinishTime", this.getDeadLineToString()));
+		params.add(new BasicNameValuePair("Deadline", this.getDeadLineToString()));
+		params.add(new BasicNameValuePair("importantDegree", this.getDeadLineToString()));
+		return params;
+	}
+
 }

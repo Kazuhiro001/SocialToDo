@@ -3,7 +3,8 @@
     package="jp.sdnaKensyu.socialtodo"
     android:versionCode="1"
     android:versionName="1.0" >
-	<uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -23,9 +24,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="TaskEntryActivity"></activity>
-        <activity android:name="LoginActivity"></activity>
-        
+        <activity android:name="jp.sdnaKensyu.socialtodo.TaskEntryActivity" >
+        </activity>
+        <activity android:name="jp.sdnaKensyu.socialtodo.LoginActivity" >
+        </activity>
+        <activity
+            android:name="jp.sdnaKensyu.socialtodo.PlotActivity"
+            android:label="@string/title_activity_plot" >
+        </activity>
     </application>
 
 </manifest>

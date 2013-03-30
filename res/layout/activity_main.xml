@@ -19,32 +19,36 @@
         	android:text="メイン画面です。"
         />
  	</TableRow>
- 	
- 	<TableRow
- 	    android:id="@+id/tableRow1"
- 	    android:layout_width="wrap_content"
- 	    android:layout_height="wrap_content" >
-    	<jp.sdnaKensyu.socialtodo.PlotView
-        	android:id="@+id/plotView1"
-        	android:layout_width="200dp"
-        	android:layout_height="200dp"
-        	android:layout_centerHorizontal="true"
-        	android:layout_centerVertical="true" />
+
+	<TableRow
+	    android:id="@+id/tableRow2"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content" >
+
+	    <Button
+	        android:id="@+id/buttonForLogin"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:text="ログインする" />
+
+	    <Button
+	        android:id="@+id/buttonToTaskEntry"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:text="タスク登録画面へ" />
 	</TableRow>
-	
- 	<TableRow
- 	    android:id="@+id/tableRow2"
- 	    android:layout_width="wrap_content"
- 	    android:layout_height="wrap_content" >
-		<Button android:id="@+id/buttonForLogin"
-	         android:layout_width="fill_parent"
-	         android:layout_height="wrap_content"
-	         android:text="ログインする" />	
-	         
-	 	<Button android:id="@+id/buttonToTaskEntry"
-	         android:layout_width="fill_parent"
-	         android:layout_height="wrap_content"
-	         android:text="タスク登録画面へ" />
- 	</TableRow>
+
+	<TableRow
+	    android:id="@+id/tableRow1"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content" >
+
+		<Button
+		    android:id="@+id/buttonToPlotView"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:text="タスク表示" />
+
+	</TableRow>
 
 </TableLayout>

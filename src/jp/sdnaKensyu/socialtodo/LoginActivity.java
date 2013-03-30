@@ -3,6 +3,9 @@ package jp.sdnaKensyu.socialtodo;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -13,6 +16,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -38,26 +42,16 @@ public class LoginActivity extends Activity{
 		 button.setOnClickListener(new View.OnClickListener() {
 			 @Override
 			 public void onClick(View v) {
-				URI uri = null;
-				HttpClient http;
-				http = new DefaultHttpClient();
-				HttpParams params = http.getParams();
-				HttpConnectionParams.setConnectionTimeout(params, 1000); //接続のタイムアウト
-				HttpConnectionParams.setSoTimeout(params, 1000); //データ取得のタイムアウト
 				EditText edittext1 = (EditText) findViewById(id.editTextForName);
 				EditText edittext2 = (EditText) findViewById(id.editTextForPassword);
-				try{
-					uri = new URI("http://yoshio916.s349.xrea.com/api/v1/login/name/"+ edittext1.getText().toString() +"/password/"+ edittext2.getText().toString() +"/");
-				}catch(URISyntaxException e ){
-				}
-				try{
-				    HttpGet objGet   = new HttpGet(uri);
-				    HttpResponse response = http.execute(objGet);
-					alertDialogBuilder.setMessage("コード確認：" + response.getStatusLine().getStatusCode());
-				    AlertDialog alertDialog = alertDialogBuilder.create();
-				    alertDialog.show();
-				}catch(IOException e){
-				}
+				Map<String, String> requestParams = new HashMap<String, String>();
+		        requestParams.put("name", edittext1.getText().toString());
+		        requestParams.put("password", edittext2.getText().toString());
+		        String returnContents;
+		        returnContents = HttpConnection.httpGet("http://yoshio916.s349.xrea.com/api/v1/login/", requestParams);
+		        alertDialogBuilder.setMessage("コード確認：" + returnContents);
+			    AlertDialog alertDialog = alertDialogBuilder.create();
+			    alertDialog.show();
 			}
 		});
 
@@ -65,24 +59,9 @@ public class LoginActivity extends Activity{
 			button.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					URI uri = null;
-					HttpClient http;
-					http = new DefaultHttpClient();
-					HttpParams params = http.getParams();
-					HttpConnectionParams.setConnectionTimeout(params, 1000); //接続のタイムアウト
-					HttpConnectionParams.setSoTimeout(params, 1000); //データ取得のタイムアウト
-					try{
-						uri = new URI("http://yoshio916.s349.xrea.com/api/v1/GetUserInformation/");
-					}catch(URISyntaxException e ){
-					}
-					try{
-					    HttpGet objGet   = new HttpGet(uri);
-					    HttpResponse response = http.execute(objGet);
-						alertDialogBuilder.setMessage("コード確認：" + response.getStatusLine().getStatusCode());
-					    AlertDialog alertDialog = alertDialogBuilder.create();
-					    alertDialog.show();
-					}catch(IOException e){
-					}
+					alertDialogBuilder.setMessage("コード確認：" + HttpConnection.httpGet("http://yoshio916.s349.xrea.com/api/v1/GetUserInformation/", null));
+				    AlertDialog alertDialog = alertDialogBuilder.create();
+				    alertDialog.show();
 			}
 		});
 

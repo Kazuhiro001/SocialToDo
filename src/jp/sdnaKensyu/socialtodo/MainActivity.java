@@ -1,5 +1,8 @@
 package jp.sdnaKensyu.socialtodo;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
@@ -10,7 +13,7 @@ import jp.sdnaKensyu.socialtodo.R.id;
 
 public class MainActivity extends Activity {
 	PlotView mPlotView;
-
+	static HttpClient http = new DefaultHttpClient();
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

@@ -104,10 +104,6 @@ public class TaskEntryActivity extends Activity {
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		URI uri = null;
 		HttpClient http;
-		http = new DefaultHttpClient();
-		HttpParams params = http.getParams();
-	    HttpConnectionParams.setConnectionTimeout(params, 1000); //接続のタイムアウト
-	    HttpConnectionParams.setSoTimeout(params, 1000); //データ取得のタイムアウト
 	    //アラートダイアログをメッセージ以外作成しておく
 	    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 		alertDialogBuilder.setTitle("警告");
@@ -131,7 +127,7 @@ public class TaskEntryActivity extends Activity {
 		}
 		try{
 		    HttpGet objGet   = new HttpGet(uri);
-	        HttpResponse response = http.execute(objGet);
+	        HttpResponse response = MainActivity.http.execute(objGet);
 
 	        if (response.getStatusLine().getStatusCode() >= 400){
 	        //レスポンスが400以上であればエラー

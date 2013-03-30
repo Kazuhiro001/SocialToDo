@@ -39,11 +39,6 @@ public class LoginActivity extends Activity{
 			 @Override
 			 public void onClick(View v) {
 				URI uri = null;
-				HttpClient http;
-				http = new DefaultHttpClient();
-				HttpParams params = http.getParams();
-				HttpConnectionParams.setConnectionTimeout(params, 1000); //接続のタイムアウト
-				HttpConnectionParams.setSoTimeout(params, 1000); //データ取得のタイムアウト
 				EditText edittext1 = (EditText) findViewById(id.editTextForName);
 				EditText edittext2 = (EditText) findViewById(id.editTextForPassword);
 				try{
@@ -52,7 +47,7 @@ public class LoginActivity extends Activity{
 				}
 				try{
 				    HttpGet objGet   = new HttpGet(uri);
-				    HttpResponse response = http.execute(objGet);
+				    HttpResponse response = MainActivity.http.execute(objGet);
 					alertDialogBuilder.setMessage("コード確認：" + response.getStatusLine().getStatusCode());
 				    AlertDialog alertDialog = alertDialogBuilder.create();
 				    alertDialog.show();
@@ -66,18 +61,13 @@ public class LoginActivity extends Activity{
 				@Override
 				public void onClick(View v) {
 					URI uri = null;
-					HttpClient http;
-					http = new DefaultHttpClient();
-					HttpParams params = http.getParams();
-					HttpConnectionParams.setConnectionTimeout(params, 1000); //接続のタイムアウト
-					HttpConnectionParams.setSoTimeout(params, 1000); //データ取得のタイムアウト
 					try{
 						uri = new URI("http://yoshio916.s349.xrea.com/api/v1/GetUserInformation/");
 					}catch(URISyntaxException e ){
 					}
 					try{
 					    HttpGet objGet   = new HttpGet(uri);
-					    HttpResponse response = http.execute(objGet);
+					    HttpResponse response = MainActivity.http.execute(objGet);
 						alertDialogBuilder.setMessage("コード確認：" + response.getStatusLine().getStatusCode());
 					    AlertDialog alertDialog = alertDialogBuilder.create();
 					    alertDialog.show();

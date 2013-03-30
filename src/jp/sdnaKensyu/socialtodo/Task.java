@@ -36,7 +36,7 @@ public class Task {
 	}
 
 	public void setDeadLine(String deadLineString){
-		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy'/'MM'/'dd'");
+		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy/MM/dd");
 		Date deadLine = new Date();
 		try{
 			deadLine = sdf1.parse(deadLineString);
@@ -46,7 +46,7 @@ public class Task {
 	}
 
 	public void setDeadLineTime(String deadLineString){
-		SimpleDateFormat sdf1 = new SimpleDateFormat("HH':'mm'");
+		SimpleDateFormat sdf1 = new SimpleDateFormat("HH:mm");
 		Date deadLine = new Date();
 		try{
 			deadLine = sdf1.parse(deadLineString);

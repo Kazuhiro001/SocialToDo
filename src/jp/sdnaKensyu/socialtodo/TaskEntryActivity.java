@@ -1,6 +1,9 @@
 package jp.sdnaKensyu.socialtodo;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Calendar;
@@ -20,13 +23,27 @@ import android.widget.DatePicker;
 import android.widget.TimePicker;
 import android.app.TimePickerDialog;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 
 public class TaskEntryActivity extends Activity {
+	String trimOutputForGetGroup(String output){
+		String str = null;
+		int startIndex = output.indexOf("<project_name>")+14;
+		int endIndex = output.indexOf("</project_name>");
+		str = output.substring(startIndex, endIndex);
+		return str;
+	}
+
+	boolean checkOutputForGetGroup(String output){
+		int startIndex = output.indexOf("<project_name>")+14;
+		int endIndex = output.indexOf("</project_name>");
+		try{
+			output.substring(startIndex, endIndex);
+			return true;
+		}catch(IndexOutOfBoundsException e){
+			return false;
+		}
+	}
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -103,11 +120,6 @@ public class TaskEntryActivity extends Activity {
 		adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		URI uri = null;
-		HttpClient http;
-		http = new DefaultHttpClient();
-		HttpParams params = http.getParams();
-	    HttpConnectionParams.setConnectionTimeout(params, 1000); //接続のタイムアウト
-	    HttpConnectionParams.setSoTimeout(params, 1000); //データ取得のタイムアウト
 	    //アラートダイアログをメッセージ以外作成しておく
 	    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 		alertDialogBuilder.setTitle("警告");
@@ -131,7 +143,7 @@ public class TaskEntryActivity extends Activity {
 		}
 		try{
 		    HttpGet objGet   = new HttpGet(uri);
-	        HttpResponse response = http.execute(objGet);
+	        HttpResponse response = MainActivity.http.execute(objGet);
 
 	        if (response.getStatusLine().getStatusCode() >= 400){
 	        //レスポンスが400以上であればエラー
@@ -142,10 +154,18 @@ public class TaskEntryActivity extends Activity {
 			adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
 			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			// アイテムを追加します
-			adapter.add("グループA");
-			adapter.add("グループB");
-			adapter.add("グループC");
-			//adapter.add();
+			InputStream objStream = response.getEntity().getContent();
+            InputStreamReader objReader = new InputStreamReader(objStream);
+            BufferedReader objBuf = new BufferedReader(objReader);
+            StringBuilder objJson = new StringBuilder();
+            String sLine;
+            while((sLine = objBuf.readLine()) != null){
+                objJson.append(sLine);
+                if(checkOutputForGetGroup(sLine)){
+                	adapter.add(trimOutputForGetGroup(sLine));
+                }
+            }
+            objStream.close();
 			spinner = (Spinner) findViewById(id.spinnerForGroup);
 			spinner.setAdapter(adapter);
 		}catch(IOException e){
@@ -161,7 +181,22 @@ public class TaskEntryActivity extends Activity {
 		button.setOnClickListener(new View.OnClickListener() {
 			 @Override
 			 public void onClick(View v) {
-				 // ボタンがクリックされた時に呼び出されます
+				 //タスク作成
+				 EditText editText1 = (EditText) findViewById(id.editTextForName);
+				 EditText editText2 = (EditText) findViewById(id.editTextForDeadLineDate);
+				 EditText editText3 = (EditText) findViewById(id.editTextForDeadLineTime);
+				 Spinner spinner = (Spinner) findViewById(id.spinnerForPriority);;
+				 Task task = new Task(null, null, 0,null);
+				 task.setName(editText1.getText().toString());
+				 task.setDeadLine(editText2.getText().toString());
+				 task.setDeadLineTime(editText3.getText().toString());
+				 task.setPriority(spinner.getSelectedItemPosition());
+				 spinner = (Spinner) findViewById(id.spinnerForGroup);;
+				 task.setGroup(spinner.getSelectedItemPosition());
+				 editText1 = (EditText) findViewById(id.editTextForInfo);
+				 task.setInfomation(editText1.getText().toString());
+				 //タスクを放り込む
+				 
 			}
 		});
 
@@ -180,3 +215,6 @@ public class TaskEntryActivity extends Activity {
 		});
 	}
 }
+
+
+

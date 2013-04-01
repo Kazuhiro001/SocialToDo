@@ -13,6 +13,7 @@ import jp.sdnaKensyu.socialtodo.R.id;
 
 public class MainActivity extends Activity {
 	static HttpClient http = new DefaultHttpClient();
+	static MyHttpConnection myHttpConnection = new MyHttpConnection("http://yoshio916.s349.xrea.com/api/v1/");
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

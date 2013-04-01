@@ -13,8 +13,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.view.Display;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.WindowManager;
 
 @SuppressLint("SimpleDateFormat")
 public class PlotView extends SurfaceView implements Runnable, SurfaceHolder.Callback {
@@ -33,11 +35,12 @@ public class PlotView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 			canvas.drawColor(Color.WHITE);
 		}
 
-		///背景描写
 		Paint paint = new Paint();
+
+		///背景描写
 		paint.setColor(Color.BLACK);
-		canvas.drawLine(10, 10, 180, 10, paint);
-		canvas.drawLine(10, 10, 10, 180, paint);
+		canvas.drawLine(10, 10, findViewById(R.id.plotView1).getWidth()-10, 10, paint);
+		canvas.drawLine(10, 10, 10, findViewById(R.id.plotView1).getHeight()-10, paint);
 
 		String projectID = "testProject";
 		List<String> userNames = null;

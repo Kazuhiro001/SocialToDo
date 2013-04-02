@@ -13,6 +13,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Display;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -42,7 +43,7 @@ public class PlotView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 		canvas.drawLine(10, 10, findViewById(R.id.plotView1).getWidth()-10, 10, paint);
 		canvas.drawLine(10, 10, 10, findViewById(R.id.plotView1).getHeight()-10, paint);
 
-		String projectID = "testProject";
+		String projectID = "3";
 		List<String> userNames = null;
 		List<Task> tasks = null;
 		userNames = getProjectUsers(projectID);
@@ -109,9 +110,9 @@ public class PlotView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 		return tasks;
 	}
 
-	private List<Task> getProjectTasks(String id) throws ParseException {
-		//TODO
+	private List<Task> getProjectTasks(String projectID) throws ParseException {
 		List<Task> tasks = new ArrayList<Task>();
+		Log.d("GetProjectTasks", MainActivity.myHttpConnection.getProjectTasks(projectID));
 		DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
 		tasks.add(new Task("name1", df.parse("2013/03/21"), 3, "testUser"));
 		tasks.add(new Task("name2", df.parse("2013/03/22"), 2, "testUser"));

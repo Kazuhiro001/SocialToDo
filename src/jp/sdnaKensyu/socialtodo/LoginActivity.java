@@ -46,7 +46,7 @@ public class LoginActivity extends Activity{
 				Log.d("TAG", "loginを押した");
 				EditText edittext1 = (EditText) findViewById(id.editTextForName);
 				EditText edittext2 = (EditText) findViewById(id.editTextForPassword);
-				alertDialogBuilder.setMessage("コード確認：" + MainActivity.myHttpConnection.login("yoshio", "yoshio"));
+				alertDialogBuilder.setMessage("コード確認：" + MainActivity.myHttpConnection.login("kazuhiro", "test"));
 			    AlertDialog alertDialog = alertDialogBuilder.create();
 			    alertDialog.show();
 			}

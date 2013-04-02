@@ -43,7 +43,7 @@ public class PlotView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 		canvas.drawLine(10, 10, findViewById(R.id.plotView1).getWidth()-10, 10, paint);
 		canvas.drawLine(10, 10, 10, findViewById(R.id.plotView1).getHeight()-10, paint);
 
-		String projectID = "3";
+		String projectID = "2";
 		List<String> userNames = null;
 		List<Task> tasks = null;
 		userNames = getProjectUsers(projectID);

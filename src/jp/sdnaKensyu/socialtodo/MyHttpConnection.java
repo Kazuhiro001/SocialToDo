@@ -59,7 +59,7 @@ public class MyHttpConnection implements Runnable {
 		mCookieStore = new BasicCookieStore();
 		mHttpContext = new BasicHttpContext();
 		mHttpContext.setAttribute(ClientContext.COOKIE_STORE, mCookieStore);
-		mHttpClient = AndroidHttpClient.newInstance("Android UserAgent", (Context) mHttpContext);
+		mHttpClient = AndroidHttpClient.newInstance("Android UserAgent");
 	}
 
 	public String login(String name, String password) {
@@ -163,8 +163,12 @@ public class MyHttpConnection implements Runnable {
 		HttpGet httpGet = null;
 		try
 		{
+//			URI uri = new URI("http://yoshio916.s349.xrea.com/api/v1/login/name/kazuhiro/password/test/");
+//			httpGet = new HttpGet(uri);
+//			HttpResponse response = mHttpClient.execute(httpGet, mHttpContext);
+
 			URI uri = new URI(mRequestUrl);
-			httpGet = new HttpGet(uri);;
+			httpGet = new HttpGet(uri);
 			HttpResponse response = mHttpClient.execute(httpGet, mHttpContext);
 			List<Cookie> cookies = mCookieStore.getCookies();
 			if( !cookies.isEmpty() ){

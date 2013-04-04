@@ -57,26 +57,12 @@ public class MyHttpConnection implements Runnable {
 		Map<String, String> requestParams = new HashMap<String, String>();
         requestParams.put("name", name);
         requestParams.put("password", password);
-        List<Cookie> cookies = mCookieStore.getCookies();
-        if( !cookies.isEmpty() ){
-            for (Cookie cookie : cookies){
-                String cookieString = cookie.getName() + " : " + cookie.getValue();
-                Log.d("TAG", cookieString);
-            }
-        }
         return httpGet("login", requestParams);
 	}
 
 	public String getProjectTasks(String projectID) {
 		Map<String, String> requestParams = new HashMap<String, String>();
 		requestParams.put("projectId", projectID);
-		List<Cookie> cookies = mCookieStore.getCookies();
-		if( !cookies.isEmpty() ){
-		    for (Cookie cookie : cookies){
-		        String cookieString = cookie.getName() + " : " + cookie.getValue();
-		        Log.d("InGetProjectTasks", cookieString);
-		    }
-		}
 		return httpGet("GetProjectInformation", requestParams);
 	}
 
@@ -183,17 +169,7 @@ public class MyHttpConnection implements Runnable {
 	}
 
 	public String getUserInformation() {
-		mRequestUrl = mUrl + "GetUserInformation/";
-		Thread t = new Thread(this);
-		t.start();
-		try {
-			t.join();
-		} catch (InterruptedException e) {
-			// TODO 自動生成された catch ブロック
-			e.printStackTrace();
-		}
-		Log.d("TAG", "loginの中");
-		return mHttpData;
+		return httpGet("getUserInformation", null);
 	}
 
 	///入力したxmlから指定したタグのデータをリストで取得する

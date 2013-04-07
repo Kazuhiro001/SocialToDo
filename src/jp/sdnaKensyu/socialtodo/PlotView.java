@@ -1,11 +1,14 @@
 package jp.sdnaKensyu.socialtodo;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import org.json.JSONException;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -52,6 +55,12 @@ public class PlotView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 			try {
 				tasks = getProjectTasks(projectID);
 			} catch (ParseException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO 自動生成された catch ブロック
+				e.printStackTrace();
+			} catch (JSONException e) {
+				// TODO 自動生成された catch ブロック
 				e.printStackTrace();
 			}
 			List<Task> userTasks = filterTasksWithName(tasks, userName);
@@ -101,22 +110,8 @@ public class PlotView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 		}
 	}
 
-	private List<Task> getTasks() throws ParseException {
-		List<Task> tasks = new ArrayList<Task>();
-		DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
-		tasks.add(new Task("name1", df.parse("2013/03/21"), 3, "testUser"));
-		tasks.add(new Task("name2", df.parse("2013/03/22"), 2, "testUser"));
-		tasks.add(new Task("name3", df.parse("2013/03/23"), 1, "testUser"));
-		return tasks;
-	}
-
-	private List<Task> getProjectTasks(String projectID) throws ParseException {
-		List<Task> tasks = new ArrayList<Task>();
-		Log.d("GetProjectTasks", MainActivity.myHttpConnection.getProjectTasks(projectID));
-		DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
-		tasks.add(new Task("name1", df.parse("2013/03/21"), 3, "testUser"));
-		tasks.add(new Task("name2", df.parse("2013/03/22"), 2, "testUser"));
-		tasks.add(new Task("name3", df.parse("2013/03/23"), 1, "testUser"));
+	private List<Task> getProjectTasks(String projectID) throws JSONException, IOException, ParseException {
+		List<Task> tasks = MainActivity.myHttpConnection.getProjectTasksJson(projectID);
 		return tasks;
 	}
 }

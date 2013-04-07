@@ -1,14 +1,22 @@
 package jp.sdnaKensyu.socialtodo;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import jp.sdnaKensyu.socialtodo.R.id;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -27,12 +35,17 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import android.net.http.AndroidHttpClient;
 import android.util.Log;
 import android.util.Xml;
+import android.widget.EditText;
+import android.widget.Spinner;
 
 public class MyHttpConnection implements Runnable {
 	private AndroidHttpClient mHttpClient;
@@ -60,10 +73,95 @@ public class MyHttpConnection implements Runnable {
         return httpGet("login", requestParams);
 	}
 
-	public String getProjectTasks(String projectID) {
+	public ArrayList<Task> getProjectTasks(String projectID) throws IOException {
+		ArrayList<Task> tasks = new ArrayList<Task>();
 		Map<String, String> requestParams = new HashMap<String, String>();
 		requestParams.put("projectId", projectID);
-		return httpGet("GetProjectInformation", requestParams);
+		String xml = httpGet("GetTaskListInformation", requestParams);
+		Log.d("InGetProjectTasks", "xml=" + xml);
+		System.out.println(xml);
+		InputStream fin = null;
+		Reader in = null;
+	    StringBuilder buffer = new StringBuilder();
+
+		try {
+			fin = new ByteArrayInputStream(xml.getBytes());
+			in = new InputStreamReader(fin, "UTF-8");
+		    int c;
+		    c = in.read();
+		    if (c != -1) {
+		    	Log.d("C", String.valueOf((char) c));
+		        if (c != 0xFEFF && c != 0xEFBBBF && c != 0xFFFE && c != 0xEFBFBE) { buffer.append((char) c); }
+		        while ((c = in.read()) != -1) { buffer.append((char) c); }
+		    }
+		} finally {
+		    if (in != null) {
+		        in.close();
+		    } else if (fin != null) {
+		        fin.close();
+		    }
+		}
+		xml = buffer.toString();
+		Log.d("InGetProjectTasks", "xml=" + xml);
+
+		//xmlの解析
+		//taskの入力用要素
+		String name = null;
+		String deadLine = null;
+		int priority = 0;
+		String infomation = null;
+		int group = Integer.valueOf(projectID);
+		try {
+			XmlPullParser parser = Xml.newPullParser();
+			parser.setInput(new StringReader(xml));
+			int eventType = parser.getEventType();
+			while (eventType != XmlPullParser.END_DOCUMENT) {
+				if (eventType == XmlPullParser.START_TAG) {
+					if ("task_name".equals(parser.getName())) {
+						eventType = parser.next();
+						if (eventType == XmlPullParser.TEXT) {
+							Log.d("TAG", "task_name" + "=" + parser.getText());
+							name = parser.getText();
+						}
+					} else if ("task_contents".equals(parser.getName())) {
+						eventType = parser.next();
+						if (eventType == XmlPullParser.TEXT) {
+							Log.d("TAG", "task_contents" + "=" + parser.getText());
+							infomation = parser.getText();
+						}
+					} else if ("inportant_degree".equals(parser.getName())) {
+						eventType = parser.next();
+						if (eventType == XmlPullParser.TEXT) {
+							priority = Integer.valueOf(parser.getText());
+						}
+					} else if ("dead_line_time".equals(parser.getName())) {
+						eventType = parser.next();
+						if (eventType == XmlPullParser.TEXT) {
+							deadLine = parser.getText();
+						}
+					}
+				} else if (eventType == XmlPullParser.END_TAG) {
+					if ("/item".equals(parser.getName())) {
+						Log.d("TAG", parser.getName());
+						Task task = new Task(null, null, 0, null);
+						task.setName(name);
+						task.setDeadLine(deadLine);
+						task.setPriority(priority);
+						task.setGroup(group);
+						task.setInfomation(infomation);
+						tasks.add(task);
+					}
+				}
+				eventType = parser.next();
+			}
+		} catch (IllegalStateException e) {
+			Log.e("TAG", e.toString());
+		} catch (IOException e) {
+			Log.e("TAG", e.toString());
+		} catch (XmlPullParserException e) {
+			Log.e("TAG", e.toString());
+		}
+		return tasks;
 	}
 
 	public String httpGet(String request,Map<String,String> requestParams)
@@ -206,5 +304,85 @@ public class MyHttpConnection implements Runnable {
 		}
 
 		return list;
+	}
+
+	public String httpGetJson(String request,Map<String,String> requestParams)
+	{
+		Log.d("TAG", "httpGet");
+		String url = mUrl + "/" + request + "/";
+		StringBuilder builder = new StringBuilder(url);
+		if(requestParams != null)
+		{
+			for(Map.Entry<String, String> entry: requestParams.entrySet())
+			{
+				builder.append((String) entry.getKey());
+				builder.append("/");
+				builder.append((String) entry.getValue());
+				builder.append("/");
+			}
+			String temp = builder.toString();
+			temp = temp.substring(0, temp.length() - 1);
+			mRequestUrl = temp;
+		}
+		else
+		{
+			mRequestUrl = url;
+		}
+		mRequestUrl = mRequestUrl + "/format/json/";
+		URI uri = null;
+		try {
+			uri = new URI(mRequestUrl);
+		} catch (URISyntaxException e1) {
+			// TODO 自動生成された catch ブロック
+			e1.printStackTrace();
+		}
+		mRequest = new HttpGet(uri);
+
+		Log.d("TAG", "getProjectTasks:mRequstUrl = "+ mRequestUrl);
+		Thread t = new Thread(this);
+		t.start();
+		try {
+			t.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		return mHttpData;
+	}
+
+	public ArrayList<Task> getProjectTasksJson(String projectID) throws IOException, JSONException {
+		ArrayList<Task> tasks = new ArrayList<Task>();
+		Map<String, String> requestParams = new HashMap<String, String>();
+		requestParams.put("projectId", projectID);
+		String json = httpGetJson("GetTaskListInformation", requestParams);
+		Log.d("InGetProjectTasks", "json=" + json);
+		System.out.println(json);
+
+		//jsonの解析
+		//taskの入力用要素
+		String name = null;
+		String deadLine = null;
+		int priority = 0;
+		String infomation = null;
+		int group = Integer.valueOf(projectID);
+		try {
+			JSONArray jsonArray = new JSONArray(json);
+			for (int i = 0; i < jsonArray.length(); i++) {
+				JSONObject jo = jsonArray.getJSONObject(i);
+				name = jo.getString("task_name");
+				deadLine = jo.getString("task_dead_line");
+				priority = jo.getInt("task_important_degree");
+				infomation = jo.getString("task_contents");
+				Task task = new Task(null, null, 0, null);
+				task.setName(name);
+				task.setDeadLine(deadLine);
+				task.setPriority(priority);
+				task.setGroup(group);
+				task.setInfomation(infomation);
+				tasks.add(task);
+			}
+		} catch (IllegalStateException e) {
+			Log.e("TAG", e.toString());
+		}
+		return tasks;
 	}
 }

@@ -21,6 +21,7 @@ import android.view.Display;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 
 @SuppressLint("SimpleDateFormat")
 public class PlotView extends SurfaceView implements Runnable, SurfaceHolder.Callback {
@@ -46,42 +47,7 @@ public class PlotView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 		canvas.drawLine(10, 10, findViewById(R.id.plotView1).getWidth()-10, 10, paint);
 		canvas.drawLine(10, 10, 10, findViewById(R.id.plotView1).getHeight()-10, paint);
 
-		String projectID = "2";
-		List<String> userNames = null;
-		List<Task> tasks = null;
-		userNames = getProjectUsers(projectID);
-
-		for(String userName: userNames){
-			try {
-				tasks = getProjectTasks(projectID);
-			} catch (ParseException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO 自動生成された catch ブロック
-				e.printStackTrace();
-			} catch (JSONException e) {
-				// TODO 自動生成された catch ブロック
-				e.printStackTrace();
-			}
-			List<Task> userTasks = filterTasksWithName(tasks, userName);
-			///一ユーザーのtask描写
-			paint.setColor(Color.RED);
-			for(Task task: userTasks) {
-				plotTask(task, canvas, paint);
-			}
-		}
 		getHolder().unlockCanvasAndPost(canvas);
-	}
-
-	private List<Task> filterTasksWithName(List<Task> tasks, String userName) {
-		// TODO 自動生成されたメソッド・スタブ
-		return tasks;
-	}
-
-	private List<String> getProjectUsers(String projectID) {
-		List<String> users = new ArrayList<String>();
-		users.add("testUser");
-		return users;
 	}
 
 	@Override
@@ -106,12 +72,7 @@ public class PlotView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 		int x = task.getPriority()*50;
 		int y = x;
 		if (canvas != null) {
-			canvas.drawCircle(x, y, 3, paint);
+			canvas.drawCircle(x, y, 10, paint);
 		}
-	}
-
-	private List<Task> getProjectTasks(String projectID) throws JSONException, IOException, ParseException {
-		List<Task> tasks = MainActivity.myHttpConnection.getProjectTasksJson(projectID);
-		return tasks;
 	}
 }

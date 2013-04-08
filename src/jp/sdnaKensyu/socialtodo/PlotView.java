@@ -20,59 +20,59 @@ import android.util.Log;
 import android.view.Display;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 
 @SuppressLint("SimpleDateFormat")
-public class PlotView extends SurfaceView implements Runnable, SurfaceHolder.Callback {
+public class PlotView extends ViewGroup {
 	boolean isLoop = true;
 
 	public PlotView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		getHolder().addCallback(this);
+		setWillNotDraw(false);
 	}
+	   @Override
+	   public void addView(View view) {
+	        super.addView(view);
+	        int currentScreen = -1;
+	     final int index = indexOfChild(view);
+	       if (index > currentScreen) {
+	         if (currentScreen > 0) {
+	             view.setVisibility(View.GONE);//★非表示
+	            }
+	           currentScreen = index;
+	          view.setVisibility(View.VISIBLE);//★表示
+	      }
 
+	    }
+	    @Override
+   protected void onLayout(boolean changed, int l, int t, int r, int b) {
+      // TODO Auto-generated method stub
+	  final int count = getChildCount();
+      final int left = getLeft();
+      final int top = getTop();
+      final int right = getRight();
+      final int bottom = getBottom();
+      for (int i = 0; i < count; i++) {
+            View view = getChildAt(i);
+          if (view.getVisibility() != View.GONE) {
+                view.layout(100, 100, right, bottom);
+          }
+       }
+        invalidate();
+   }
+
+	@SuppressLint("DrawAllocation")
 	@Override
-	public void run() {
-		///画面初期化
-		Canvas canvas = getHolder().lockCanvas();
-		if (canvas != null) {
-			canvas.drawColor(Color.WHITE);
-		}
-
+	protected void onDraw(Canvas canvas) {
+		// TODO 自動生成されたメソッド・スタブ
+		super.onDraw(canvas);
 		Paint paint = new Paint();
-
 		///背景描写
 		paint.setColor(Color.BLACK);
 		canvas.drawLine(10, 10, findViewById(R.id.plotView1).getWidth()-10, 10, paint);
 		canvas.drawLine(10, 10, 10, findViewById(R.id.plotView1).getHeight()-10, paint);
-
-		getHolder().unlockCanvasAndPost(canvas);
-	}
-
-	@Override
-	public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
-		// TODO 自動生成されたメソッド・スタブ
-
-	}
-
-	@Override
-	public void surfaceCreated(SurfaceHolder arg0) {
-		Thread thread = new Thread(this);
-		thread.start();
-	}
-
-	@Override
-	public void surfaceDestroyed(SurfaceHolder arg0) {
-		isLoop = false;
-	}
-
-	private void plotTask(Task task, Canvas canvas, Paint paint) {
-		//plotする位置を決める
-		int x = task.getPriority()*50;
-		int y = x;
-		if (canvas != null) {
-			canvas.drawCircle(x, y, 10, paint);
-		}
 	}
 }

@@ -13,6 +13,8 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.Menu;
+import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -26,7 +28,6 @@ public class PlotActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_plot);
-		layout = (FrameLayout) findViewById(R.id.Frame);
 
 		///グループ選択用
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
@@ -85,7 +86,7 @@ public class PlotActivity extends Activity {
 	}
 	public void plotTask(Task task, Paint paint) {
 		TaskView t = new TaskView(this, task, paint);
-		layout.addView(t);
+		mPlotView.addView(t, new LayoutParams(10, 10));
 	}
 
 	private List<Task> getProjectTasks(String projectID) throws JSONException, IOException, ParseException {
